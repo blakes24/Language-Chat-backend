@@ -44,10 +44,10 @@ API documentation: [https://app.swaggerhub.com/apis-docs/blakely/lang-chat/1.0.0
 
 ### Main Page Layout
 ![wireframe](wireframe1.png)
+[All page views](https://www.figma.com/file/yiMozoECcj0uvCkzkC5nGN/Language-Chat-Wireframe?node-id=1%3A5647)
 
 ## Stretch goals
 * Implement video chat using webRTC
 * Allow a user to block another user
-* Allow users to upload a profile picture
 
 
