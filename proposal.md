@@ -12,7 +12,7 @@ I will be building the API for handling user data and messages with Node.js and 
 ## Back End Outline
 
 ### Database Schema
-![database schema](chat-schema.png)
+![database schema](chat-db.png)
 
 ### Tech Stack
 * Node.js
@@ -42,9 +42,17 @@ API documentation: [https://app.swaggerhub.com/apis-docs/blakely/lang-chat/1.0.0
 * A user can send a message to any user and if they are currently online, join a live chat
 * A user can add other users to their contacts
 
-### Main Page Layout
+### Wireframes
+#### Main Page Layout
+
 ![wireframe](wireframe1.png)
+
 [All page views](https://www.figma.com/file/yiMozoECcj0uvCkzkC5nGN/Language-Chat-Wireframe?node-id=1%3A5647)
+
+## Deployment
+* CircleCI
+* Docker
+* AWS ECS
 
 ## Stretch goals
 * Implement video chat using webRTC
