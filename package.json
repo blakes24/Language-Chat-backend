@@ -1,0 +1,33 @@
+{
+  "name": "chat-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest",
+    "start": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blakes24/Language-Chat-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blakes24/Language-Chat-backend/issues"
+  },
+  "homepage": "https://github.com/blakes24/Language-Chat-backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "supertest": "^6.1.3"
+  }
+}
