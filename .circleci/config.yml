@@ -1,0 +1,27 @@
+version: 2.1
+orbs:
+  node: circleci/node@3.0.0
+  aws-ecr: circleci/aws-ecr@7.0.0
+  aws-ecs: circleci/aws-ecs@2.1.0
+workflows:
+  node-tests:
+    jobs:
+      - node/test
+  build-and-deploy:
+    jobs:
+      - node/test:
+          filters:
+            branches:
+              only: main
+      - aws-ecr/build-and-push-image:
+          requires:
+            - node/test
+          profile-name: Administrator
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          tag: "${CIRCLE_SHA1}"
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image # only run this job once aws-ecr/build-and-push-image has completed
+          family: "${AWS_RESOURCE_NAME_PREFIX}"
+          cluster-name: "${AWS_RESOURCE_NAME_PREFIX}"
+          container-image-name-updates: "container=${AWS_RESOURCE_NAME_PREFIX},tag=${CIRCLE_SHA1}"

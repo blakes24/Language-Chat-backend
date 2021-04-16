@@ -1,7 +1,10 @@
 .git
+.gitignore
+.dockerignore
 .cache
 node_modules
 *.md
 .DS_Store
 .env
 proposal
+Dockerfile
