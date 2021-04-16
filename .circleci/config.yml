@@ -9,7 +9,13 @@ workflows:
       - node/test
   build-and-deploy:
     jobs:
+      - node/test:
+        filters:
+            branches:
+              only: main
       - aws-ecr/build-and-push-image:
+          requires:
+            - node/test
           profile-name: Administrator
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1}"
