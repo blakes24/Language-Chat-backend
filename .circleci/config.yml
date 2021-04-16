@@ -9,16 +9,16 @@ workflows:
       - node/test
   build-and-deploy:
     jobs:
-      - node/test
+      - node/test:
+          filters:
+            branches:
+              only: main
       - aws-ecr/build-and-push-image:
           requires:
             - node/test
           profile-name: Administrator
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1}"
-          filters:
-            branches:
-              only: main
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image # only run this job once aws-ecr/build-and-push-image has completed
