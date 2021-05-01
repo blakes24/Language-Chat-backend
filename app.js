@@ -5,6 +5,8 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const ExpressError = require("./ExpressError");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -14,6 +16,24 @@ app.use(morgan("dev"));
 
 app.get("/", function (req, res, next) {
   return res.status(200).json({ msg: "working" });
+});
+
+app.use("/auth", authRoutes);
+
+/** Handle 404 errors */
+app.use(function (req, res, next) {
+  return next(new ExpressError("Not Found", 404));
+});
+
+/** Generic error handler */
+app.use(function (err, req, res, next) {
+  if (process.env.NODE_ENV !== "test") console.error(err.stack);
+  const status = err.status || 500;
+  const message = err.message;
+
+  return res.status(status).json({
+    error: { message, status },
+  });
 });
 
 module.exports = app;
