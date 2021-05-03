@@ -20,8 +20,10 @@ const userData = {
   email: "tester1@mail.com",
   bio: "stuff about me",
   imageUrl: null,
-  speaks: { language: "English", level: "native" },
-  learning: { language: "Spanish", level: "beginner" },
+  speaksLang: "English",
+  speaksLevel: "native",
+  learnsLang: "Spanish",
+  learnsLevel: "beginner",
 };
 
 /************************************** GET / */

@@ -32,8 +32,10 @@ router.post(
         email,
         bio,
         imageUrl,
-        speaks,
-        learning,
+        speaksLang,
+        speaksLevel,
+        learnsLang,
+        learnsLevel,
       } = req.body;
 
       const newUser = await User.register({
@@ -44,8 +46,8 @@ router.post(
         imageUrl,
       });
 
-      await Language.add(newUser.id, speaks.language, speaks.level);
-      await Language.add(newUser.id, learning.language, learning.level);
+      await Language.add(newUser.id, speaksLang, speaksLevel);
+      await Language.add(newUser.id, learnsLang, learnsLevel);
 
       const token = createToken(newUser);
 
