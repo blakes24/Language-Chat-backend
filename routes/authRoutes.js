@@ -3,10 +3,10 @@
 /** Routes for authentication. */
 
 const express = require("express");
-const ExpressError = require("../ExpressError");
+const ExpressError = require("../helpers/ExpressError");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
-const { createToken } = require("../helpers");
+const { createToken } = require("../helpers/jwt");
 const Language = require("../models/language");
 
 const router = new express.Router();

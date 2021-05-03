@@ -10,7 +10,7 @@ CREATE TABLE users (
     password TEXT,
     bio TEXT,
     image_url TEXT,
-    active BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     socket_id TEXT
 );
 

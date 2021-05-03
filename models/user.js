@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const ExpressError = require("../ExpressError");
+const ExpressError = require("../helpers/ExpressError");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -36,6 +36,38 @@ class User {
     );
 
     const user = result.rows[0];
+
+    return user;
+  }
+
+  /** Get user: 
+   * returns { id, name, email, bio, imageUrl, active, socketId, languages }
+  **/
+
+  static async get(userId) {
+    const userRes = await db.query(
+      `SELECT u.id,
+                  u.name,
+                  u.email,
+                  u.bio,
+                  u.image_url AS "imageUrl",
+                  active,
+                  socket_id AS "socketId",
+                  COALESCE(json_agg(json_build_object(
+                      'id', l.id,
+                      'language', l.language,
+                      'level', l.level))) AS languages
+           FROM users as u
+           LEFT JOIN languages AS l
+           ON u.id = l.user_id
+           WHERE u.id = $1
+           GROUP BY u.id`,
+      [userId]
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new ExpressError("User not found", 404);
 
     return user;
   }

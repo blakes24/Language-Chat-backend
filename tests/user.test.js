@@ -13,6 +13,7 @@ beforeAll(seedDatabase);
 beforeEach(beginTransaction);
 afterEach(rollbackTransaction);
 afterAll(endTransaction);
+
 /************************************** register */
 
 describe("register", function () {
@@ -49,3 +50,32 @@ describe("register", function () {
     }
   });
 });
+
+/************************************** get a user */
+
+describe("get a user", function () {
+  test("works", async function () {
+    let user = await User.get(1);
+    expect(user).toEqual(
+      expect.objectContaining({
+        id: 1,
+        name: expect.any(String),
+        email: expect.any(String),
+        bio: expect.any(String),
+        imageUrl: null,
+        active: true,
+        socketId: null,
+        languages: expect.any(Array),
+      })
+    );
+  });
+
+  test("throws error if user does not exist", async function () {
+    try {
+      await User.get(999);
+    } catch (err) {
+      expect(err.status).toEqual(404);
+    }
+  });
+});
+
