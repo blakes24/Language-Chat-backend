@@ -5,8 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
+    "ci:test": "NODE_ENV=test jest --ci --runInBand --detectOpenHandles --forceExit",
     "start": "NODE_ENV=production node server.js",
-    "dev": "NODE_ENV=development nodemon server.js"
+    "dev": "NODE_ENV=development nodemon server.js",
+    "seed": "psql -d langchat -f data.sql"
   },
   "repository": {
     "type": "git",
@@ -20,9 +22,13 @@
   },
   "homepage": "https://github.com/blakes24/Language-Chat-backend#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-validator": "^6.10.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.6.0"
   },
   "devDependencies": {
     "jest": "^26.6.3",

@@ -1,21 +1,56 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
   aws-ecr: circleci/aws-ecr@7.0.0
   aws-ecs: circleci/aws-ecs@2.1.0
+
+jobs:
+  build-and-test:
+    docker:
+      - image: node:latest
+        environment:
+          PGUSER: postgres
+          PGDATABASE: chat_test
+      - image: circleci/postgres:latest-ram
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: chat_test
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm run ci:test
+
 workflows:
-  node-tests:
+  test:
     jobs:
-      - node/test
+      - build-and-test
   build-and-deploy:
     jobs:
-      - node/test:
+      - build-and-test:
           filters:
             branches:
               only: main
       - aws-ecr/build-and-push-image:
           requires:
-            - node/test
+            - build-and-test
           profile-name: Administrator
           repo: "${AWS_RESOURCE_NAME_PREFIX}"
           tag: "${CIRCLE_SHA1}"
