@@ -1,10 +1,10 @@
 "use strict";
 
 const jwt = require("jsonwebtoken");
-const { SECRET_KEY } = require("./config");
+const { SECRET_KEY } = require("../config");
 const ExpressError = require("./ExpressError");
 
-/** return JWT with userId and admin. */
+/** return JWT with userId. */
 
 function createToken(user) {
   let payload = {

@@ -7,6 +7,7 @@ const {
   beginTransaction,
   rollbackTransaction,
   endTransaction,
+  testJwt,
 } = require("./testSetup");
 
 beforeAll(seedDatabase);
@@ -45,5 +46,25 @@ describe("POST /register", function () {
       .send(userData);
     expect(resp.body).toEqual({token: expect.any(String)})
     expect(resp.status).toEqual(201)
+  });
+});
+
+/************************************** GET /user:id */
+
+describe("GET /user/:id", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .get("/user/1")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual(
+      expect.objectContaining({ user: expect.any(Object) })
+    );
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if missing token", async function () {
+    const resp = await request(app)
+      .get("/users/1")
+    expect(resp.statusCode).toEqual(401);
   });
 });
