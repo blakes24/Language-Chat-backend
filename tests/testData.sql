@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS partners CASCADE;
 DROP TABLE IF EXISTS languages CASCADE;
+DROP TABLE IF EXISTS rooms CASCADE;
 
 CREATE TABLE users (
     id serial PRIMARY KEY,
@@ -11,7 +12,8 @@ CREATE TABLE users (
     bio TEXT,
     image_url TEXT,
     active BOOLEAN NOT NULL DEFAULT TRUE,
-    socket_id TEXT
+    social_provider TEXT,
+    social_id TEXT
 );
 
 CREATE TABLE messages (
@@ -33,6 +35,13 @@ CREATE TABLE languages (
     user_id INTEGER REFERENCES users ON DELETE CASCADE,
     language TEXT,
     level TEXT
+);
+
+CREATE TABLE rooms (
+    id serial PRIMARY KEY,
+    user_one INTEGER REFERENCES users ON DELETE CASCADE,
+    user_two INTEGER REFERENCES users ON DELETE CASCADE,
+    last_active TIMESTAMP
 );
 
 INSERT INTO users (name, email, bio)
