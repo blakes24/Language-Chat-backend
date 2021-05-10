@@ -35,7 +35,6 @@ router.post(
         imageUrl,
         socialId,
         speaksLang,
-        speaksLevel,
         learnsLang,
         learnsLevel,
       } = req.body;
@@ -49,8 +48,8 @@ router.post(
         socialId,
       });
 
-      await Language.add(newUser.id, speaksLang, speaksLevel);
-      await Language.add(newUser.id, learnsLang, learnsLevel);
+      await Language.addSpeaks(newUser.id, speaksLang);
+      await Language.addLearning(newUser.id, learnsLang, learnsLevel);
 
       const token = createToken(newUser);
 
