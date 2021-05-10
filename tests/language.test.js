@@ -15,21 +15,39 @@ afterEach(rollbackTransaction);
 afterAll(endTransaction);
 /************************************** add */
 
-describe("add", function () {
-  const language = "Spanish";
+describe("addSpeaks", function () {
+  const language = "id";
+  const userId = 1;
+
+  test("works", async function () {
+    let newLanguage = await Language.addSpeaks(userId, language);
+    expect(newLanguage).toEqual({
+      id: expect.any(Number),
+      languageCode: "id",
+      userId: 1,
+    });
+    const found = await db.query(
+      "SELECT * FROM speaks_languages WHERE language_code = 'id'"
+    );
+    expect(found.rows.length).toEqual(1);
+  });
+});
+
+describe("addLearning", function () {
+  const language = "id";
   const level = "beginner";
   const userId = 1;
 
   test("works", async function () {
-    let newLanguage = await Language.add(userId, language, level);
+    let newLanguage = await Language.addLearning(userId, language, level);
     expect(newLanguage).toEqual({
       id: expect.any(Number),
-      language: "Spanish",
+      languageCode: "id",
       level: "beginner",
       userId: 1,
     });
     const found = await db.query(
-      "SELECT * FROM languages WHERE language = 'Spanish'"
+      "SELECT * FROM learning_languages WHERE language_code = 'id'"
     );
     expect(found.rows.length).toEqual(1);
   });

@@ -25,9 +25,8 @@ const userData = {
   imageUrl: null,
   socialProvider: "google",
   socialId: "abc123ume",
-  speaksLang: "English",
-  speaksLevel: "native",
-  learnsLang: "Spanish",
+  speaksLang: "en",
+  learnsLang: "es",
   learnsLevel: "beginner",
 };
 
@@ -115,12 +114,12 @@ describe("POST auth/validate", function () {
   });
 });
 
-/************************************** GET /user/:id */
+/************************************** GET /users/:id */
 
-describe("GET /user/:id", function () {
+describe("GET /users/:id", function () {
   test("works", async function () {
     const resp = await request(app)
-      .get("/user/1")
+      .get("/users/1")
       .set("authorization", `Bearer ${testJwt}`);
     expect(resp.body).toEqual(
       expect.objectContaining({ user: expect.any(Object) })
@@ -129,8 +128,26 @@ describe("GET /user/:id", function () {
   });
 
   test("unauth if missing token", async function () {
+    const resp = await request(app).get("/users/1");
+    expect(resp.statusCode).toEqual(401);
+  });
+});
+
+/************************************** GET /users */
+
+describe("GET /users", function () {
+  test("works", async function () {
     const resp = await request(app)
-      .get("/users/1")
+      .get("/users")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual(
+      expect.objectContaining({ users: expect.any(Array) })
+    );
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if missing token", async function () {
+    const resp = await request(app).get("/users");
     expect(resp.statusCode).toEqual(401);
   });
 });

@@ -6,7 +6,6 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const ExpressError = require("./helpers/ExpressError");
-const { authenticateUser } = require("./helpers/middleware");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 
@@ -21,10 +20,7 @@ app.get("/", function (req, res, next) {
 });
 
 app.use("/auth", authRoutes);
-
-app.use(authenticateUser);
-// user must have token for the following endpoints
-app.use("/user", userRoutes);
+app.use("/users", userRoutes);
 
 /** Handle 404 errors */
 app.use(function (req, res, next) {

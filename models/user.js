@@ -3,6 +3,7 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const ExpressError = require("../helpers/ExpressError");
+const { sqlForLangFilter } = require("../helpers/sql");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -87,27 +88,31 @@ class User {
   }
 
   /** Get user:
-   * returns { id, name, email, bio, imageUrl, active, socketId, languages }
+   * returns { id, name, email, bio, imageUrl, active, socialProvider, languages }
    **/
 
   static async get(userId) {
     const result = await db.query(
-      `SELECT u.id,
-              u.name,
-              u.email,
-              u.bio,
-              u.image_url AS "imageUrl",
-              active,
-              social_provider AS "socialProvider",
-              COALESCE(json_agg(json_build_object(
-                  'id', l.id,
-                  'language', l.language,
-                  'level', l.level))) AS languages
-           FROM users as u
-           LEFT JOIN languages AS l
-           ON u.id = l.user_id
-           WHERE u.id = $1
-           GROUP BY u.id`,
+      `SELECT
+        u.id,
+        u.name,
+        u.email,
+        u.bio,
+        u.image_url AS "imageUrl",
+        active,
+        social_provider AS "socialProvider",
+        COALESCE(json_agg(json_build_object('code', l1.code, 'language', l1.name))) AS speaks,
+        COALESCE(json_agg(json_build_object('code', l2.code, 'language', l2.name, 'level', ll.level))) AS learning
+      FROM
+        users AS u
+        JOIN speaks_languages AS sl ON u.id = sl.user_id
+        JOIN languages AS l1 ON l1.code = sl.language_code
+        JOIN learning_languages AS ll ON u.id = ll.user_id
+        JOIN languages AS l2 ON l2.code = ll.language_code
+      WHERE
+        u.id = $1
+      GROUP BY
+        u.id`,
       [userId]
     );
 
@@ -116,6 +121,41 @@ class User {
     if (!user) throw new ExpressError("User not found", 404);
 
     return user;
+  }
+
+  /** Get all users:
+   * returns [{ id, name, bio, imageUrl, active, languages },]
+   **/
+
+  static async getAll(filters) {
+    const { whereCols, values } = sqlForLangFilter(filters);
+    
+    const result = await db.query(
+      `SELECT
+        u.id,
+        u.name,
+        u.bio,
+        u.image_url AS "imageUrl",
+        active,
+        COALESCE(json_agg(json_build_object('code', l1.code, 'language', l1.name))) AS speaks,
+        COALESCE(json_agg(json_build_object('code', l2.code, 'language', l2.name, 'level', ll.level))) AS learning
+      FROM
+        users AS u
+        JOIN speaks_languages AS sl ON u.id = sl.user_id
+        JOIN languages AS l1 ON l1.code = sl.language_code
+        JOIN learning_languages AS ll ON u.id = ll.user_id
+        JOIN languages AS l2 ON l2.code = ll.language_code
+      ${whereCols}
+      GROUP BY
+        u.id`,
+      values
+    );
+
+    const users = result.rows;
+
+    if (!users.length) throw new ExpressError("No users found", 404);
+
+    return users;
   }
 }
 

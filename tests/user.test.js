@@ -130,10 +130,11 @@ describe("get a user", function () {
         name: expect.any(String),
         email: expect.any(String),
         bio: expect.any(String),
-        imageUrl: null,
+        imageUrl: expect.any(String),
         active: true,
         socialProvider: null,
-        languages: expect.any(Array),
+        speaks: expect.any(Array),
+        learning: expect.any(Array),
       })
     );
   });
@@ -141,6 +142,30 @@ describe("get a user", function () {
   test("throws error if user does not exist", async function () {
     try {
       await User.get(999);
+    } catch (err) {
+      expect(err.status).toEqual(404);
+    }
+  });
+});
+
+/************************************** gets all users */
+
+describe("gets all users", function () {
+  test("works", async function () {
+    let users = await User.getAll({});
+    expect(users).toEqual(expect.any(Array));
+    expect(users.length).toEqual(4);
+  });
+
+  test("works with filter", async function () {
+    let users = await User.getAll({speaks: 'ru'});
+    expect(users.length).toEqual(1);
+    expect(users[0].speaks[0].code).toEqual('ru');
+  });
+
+  test("throws error if no users match filter criteria", async function () {
+    try {
+      await User.getAll({speaks: 'in'});
     } catch (err) {
       expect(err.status).toEqual(404);
     }
