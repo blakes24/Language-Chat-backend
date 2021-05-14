@@ -172,3 +172,33 @@ describe("gets all users", function () {
   });
 });
 
+/************************************** gets user's chat rooms */
+
+describe("gets user's chat rooms", function () {
+  test("works", async function () {
+    let rooms = await User.getRooms(1);
+    expect(rooms).toEqual(expect.any(Array));
+    expect(rooms.length).toEqual(2);
+  });
+
+  test("works with filter", async function () {
+    let rooms = await User.getRooms(1,2);
+    expect(rooms.length).toEqual(1);
+    expect(rooms[0].partner).toEqual({
+      id: 2,
+      name: expect.any(String),
+      bio: expect.any(String),
+      imageUrl: expect.any(String),
+      active: expect.any(Boolean),
+    });
+  });
+
+  test("throws error if no rooms found", async function () {
+    try {
+      await User.getRooms(99);
+    } catch (err) {
+      expect(err.status).toEqual(404);
+    }
+  });
+});
+

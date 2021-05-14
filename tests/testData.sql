@@ -40,7 +40,7 @@ CREATE TABLE partners (
 
 CREATE TABLE languages (
     code varchar(6) PRIMARY KEY,
-    name TEXT
+    name text
 );
 
 CREATE TABLE speaks_languages (
@@ -62,7 +62,7 @@ CREATE TABLE rooms (
     user_two integer REFERENCES users ON DELETE CASCADE
 );
 
-INSERT INTO users (name, email, password, bio, image_url)
+INSERT INTO users (name, email, PASSWORD, bio, image_url)
     VALUES ('Agustina', 'Dane.Johnston2@gmail.com', 'gD0wGD4dY9g41CE', 'Vero accusamus recusandae eaque vitae necessitatibus. Aut consequatur ex. In nesciunt architecto nemo. Quibusdam ab eum iusto ea laborum qui quo alias. Et voluptatum voluptatem dolorem laudantium odit. Soluta nobis quisquam rerum accusantium sequi quam.', 'https://cdn.fakercloud.com/avatars/brenton_clarke_128.jpg'), ('Susanna', 'Simeon_Kovacek50@hotmail.com', 'CIXzmie_VV225YY', 'Sit soluta qui iure commodi iste non necessitatibus. Porro veniam quia temporibus magnam officia est. Omnis deserunt enim voluptas ut eveniet.', 'https://cdn.fakercloud.com/avatars/agromov_128.jpg'), ('Lexi', 'Dangelo_Walter55@yahoo.com', 'dtY3Il8qzducSv4', 'Natus ducimus nostrum quas. Quis necessitatibus soluta rerum consequatur. Est ipsam eveniet est explicabo consectetur pariatur. Ut officia facere et harum. Est et a animi. Quidem et temporibus quia aperiam magnam nemo et explicabo.', 'https://cdn.fakercloud.com/avatars/shvelo96_128.jpg'), ('Reece', 'Jarred.Lowe@gmail.com', '5LK5KsxLZyJF0Sb', 'Et dolorem sit. Eligendi reiciendis dicta. Eligendi vel deserunt. Aut reiciendis ut. Quo dolores et repellat. Dolorem dolorem labore.', 'https://cdn.fakercloud.com/avatars/edobene_128.jpg');
 
 INSERT INTO languages (code, name)
@@ -74,3 +74,5 @@ INSERT INTO speaks_languages (user_id, language_code)
 INSERT INTO learning_languages (user_id, language_code, level)
     VALUES (4, 'en', 'beginner'), (3, 'es', 'advanced'), (2, 'zh', 'beginner'), (1, 'en', 'intermediate');
 
+INSERT INTO rooms (user_one, user_two)
+    VALUES (1, 2), (2, 3), (1, 3);
