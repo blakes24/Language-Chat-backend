@@ -88,7 +88,7 @@ describe("POST auth/social-token", function () {
   test("works", async function () {
     const resp = await request(app)
       .post("/auth/social-token")
-      .send({ provider:  "google", token: "socialtoken" });
+      .send({ provider: "google", token: "socialtoken" });
     expect(resp.body).toEqual({ token: expect.any(String) });
     expect(resp.status).toEqual(200);
   });
@@ -96,7 +96,7 @@ describe("POST auth/social-token", function () {
   test("throws error if user not found", async function () {
     const resp = await request(app)
       .post("/auth/social-token")
-      .send({ provider:  "facebook", token: "socialtoken" });
+      .send({ provider: "facebook", token: "socialtoken" });
     expect(resp.status).toEqual(401);
   });
 });
@@ -108,7 +108,7 @@ describe("POST auth/validate", function () {
   test("works", async function () {
     const resp = await request(app)
       .post("/auth/validate")
-      .send({ provider:  "google", token: "socialtoken" });
+      .send({ provider: "google", token: "socialtoken" });
     expect(resp.body).toEqual({ valid: true });
     expect(resp.status).toEqual(200);
   });
@@ -149,5 +149,20 @@ describe("GET /users", function () {
   test("unauth if missing token", async function () {
     const resp = await request(app).get("/users");
     expect(resp.statusCode).toEqual(401);
+  });
+});
+
+/************************************** POST /rooms */
+
+describe("POST rooms", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .post("/rooms")
+      .send({ user1: 1, user2: 2 })
+      .set("authorization", `Bearer ${testJwt}`);;
+    expect(resp.body).toEqual({
+      room: { id: expect.any(Number), user1: 1, user2: 2 },
+    });
+    expect(resp.status).toEqual(201);
   });
 });

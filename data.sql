@@ -28,8 +28,8 @@ CREATE TABLE messages (
     id serial PRIMARY KEY,
     sent_from integer REFERENCES users ON DELETE CASCADE,
     sent_to integer REFERENCES users ON DELETE CASCADE,
-    body text,
-    timestamp timestamp
+    body text NOT NULL,
+    sent_at timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE partners (
@@ -40,7 +40,7 @@ CREATE TABLE partners (
 
 CREATE TABLE languages (
     code varchar(6) PRIMARY KEY,
-    name text
+    name text NOT NULL
 );
 
 CREATE TABLE speaks_languages (
@@ -53,14 +53,13 @@ CREATE TABLE learning_languages (
     id serial PRIMARY KEY,
     user_id integer REFERENCES users ON DELETE CASCADE,
     language_code text REFERENCES languages ON DELETE CASCADE,
-    level integer
+    level integer NOT NULL
 );
 
 CREATE TABLE rooms (
     id serial PRIMARY KEY,
     user_one integer REFERENCES users ON DELETE CASCADE,
-    user_two integer REFERENCES users ON DELETE CASCADE,
-    last_active timestamp
+    user_two integer REFERENCES users ON DELETE CASCADE
 );
 
 INSERT INTO users (name, email, PASSWORD, bio, image_url)
@@ -70,7 +69,7 @@ INSERT INTO languages (code, name)
     VALUES ('ar', 'Arabic'), ('zh', 'Chinese'), ('en', 'English'), ('fr', 'French'), ('de', 'German'), ('hi', 'Hindi'), ('id', 'Indonesian'), ('it', 'Italian'), ('ja', 'Japanese'), ('ko', 'Korean'), ('pt', 'Portuguese'), ('ru', 'Russian'), ('es', 'Spanish');
 
 INSERT INTO speaks_languages (user_id, language_code)
-    VALUES (1, 'it'), (2, 'ja'), (3, 'it'), (4, 'it'), (5, 'ru'), (6, 'en'), (7, 'pt'), (8, 'ko'), (9, 'it'), (10, 'ru'), (11, 'pt'), (12, 'ko'), (13, 'es'), (14, 'fr'), (15, 'en'), (16, 'es'), (17, 'en'), (18, 'ko'), (19, 'pt'), (20, 'fr'), (21, 'zh'), (22, 'ja'), (23, 'de'), (24, 'fr'), (25, 'zh'), (26, 'hi'), (27, 'ar'), (28, 'zh'), (29, 'en'), (30, 'ja'), (31, 'en'), (32, 'ko'), (33, 'it'), (34, 'it'), (35, 'zh'), (36, 'ko'), (37, 'fr'), (38, 'ar'), (39, 'ko'), (40, 'zh');
+    VALUES (1, 'it'), (2, 'ja'), (3, 'it'), (4, 'it'), (5, 'ru'), (6, 'en'), (7, 'pt'), (8, 'ko'), (9, 'it'), (10, 'ru'), (11, 'pt'), (12, 'ko'), (13, 'es'), (14, 'fr'), (15, 'en'), (16, 'es'), (17, 'en'), (18, 'ko'), (19, 'pt'), (20, 'fr'), (21, 'id'), (22, 'ja'), (23, 'de'), (24, 'fr'), (25, 'zh'), (26, 'hi'), (27, 'ar'), (28, 'zh'), (29, 'en'), (30, 'ja'), (31, 'en'), (32, 'ko'), (33, 'it'), (34, 'it'), (35, 'zh'), (36, 'ko'), (37, 'fr'), (38, 'ar'), (39, 'ko'), (40, 'zh');
 
 INSERT INTO learning_languages (user_id, language_code, level)
     VALUES (1, 'ko', 2), (2, 'en', 1), (3, 'en', 1), (4, 'en', 3), (5, 'ar', 3), (6, 'zh', 3), (7, 'it', 1), (8, 'es', 2), (9, 'pt', 3), (10, 'ko', 3), (11, 'de', 3), (12, 'zh', 2), (13, 'id', 3), (14, 'pt', 2), (15, 'id', 2), (16, 'de', 3), (17, 'en', 2), (18, 'en', 3), (19, 'ko', 1), (20, 'pt', 3), (21, 'zh', 2), (22, 'hi', 3), (23, 'ja', 3), (24, 'ar', 1), (25, 'hi', 1), (26, 'zh', 3), (27, 'ko', 3), (28, 'ar', 1), (29, 'ar', 1), (30, 'es', 2), (31, 'fr', 1), (32, 'ru', 1), (33, 'ja', 1), (34, 'ja', 2), (35, 'fr', 2), (36, 'en', 1), (37, 'it', 2), (38, 'ja', 1), (39, 'fr', 2), (40, 'ar', 2);
