@@ -129,7 +129,7 @@ class User {
 
   static async getAll(filters) {
     const { whereCols, values } = sqlForLangFilter(filters);
-    
+
     const result = await db.query(
       `SELECT
         u.id,
@@ -156,6 +156,43 @@ class User {
     if (!users.length) throw new ExpressError("No users found", 404);
 
     return users;
+  }
+
+  /** Get user's chat rooms:
+   * returns [{id, partner:{id, name, bio, imageUrl, active}}, ...]
+   **/
+
+  static async getRooms(userId, partnerId) {
+    let values = [userId];
+    let filter = "";
+    if (partnerId) {
+      values.push(partnerId);
+      filter = `AND (r.user_one = $2 OR r.user_two = $2)`;
+    }
+
+    const result = await db.query(
+      `SELECT
+        r.id,
+        CASE
+          WHEN r.user_one !=$1 THEN
+            COALESCE(json_build_object('id', u1.id, 'name', u1.name, 'bio', u1.bio, 'imageUrl', u1.image_url, 'active', u1.active))
+          WHEN r.user_two !=$1 THEN
+            COALESCE(json_build_object('id', u2.id, 'name', u2.name, 'bio', u2.bio, 'imageUrl', u2.image_url, 'active', u2.active))
+        END partner
+      FROM
+        rooms AS r
+        JOIN users AS u1 ON r.user_one = u1.id
+        JOIN users AS u2 ON r.user_two = u2.id
+      WHERE (r.user_one = $1 OR r.user_two = $1)
+      ${filter};`,
+      values
+    );
+
+    const rooms = result.rows;
+
+    if (!rooms.length) throw new ExpressError("No rooms found", 404);
+
+    return rooms;
   }
 }
 

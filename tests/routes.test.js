@@ -11,6 +11,7 @@ const {
 } = require("./testSetup");
 const { validateFacebook, validateGoogle } = require("../helpers/social");
 const User = require("../models/user");
+const Room = require("../models/room");
 
 beforeAll(seedDatabase);
 beforeEach(beginTransaction);
@@ -143,6 +144,33 @@ describe("GET /users", function () {
     expect(resp.body).toEqual(
       expect.objectContaining({ users: expect.any(Array) })
     );
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if missing token", async function () {
+    const resp = await request(app).get("/users");
+    expect(resp.statusCode).toEqual(401);
+  });
+});
+
+/************************************** GET /users/:userId/rooms */
+
+describe("GET /users/:userId/rooms", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .get("/users/1/rooms")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual(
+      expect.objectContaining({ rooms: expect.any(Array) })
+    );
+    expect(resp.status).toEqual(200);
+  });
+
+  test("works with partner filter", async function () {
+    const resp = await request(app)
+      .get("/users/1/rooms?partner=3")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body.rooms[0].partner.id).toEqual(3);
     expect(resp.status).toEqual(200);
   });
 

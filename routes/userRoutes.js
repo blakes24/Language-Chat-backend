@@ -49,4 +49,22 @@ router.get("/", authenticateUser, async function (req, res, next) {
   }
 });
 
+/** GET /:userId/rooms => {rooms: [{id, user1, user2},] }
+ *
+ * optional filter in query string: partnerId
+ *
+ * Authorization required: valid token
+ **/
+
+router.get("/:userId/rooms", authenticateUser, async function (req, res, next) {
+  try {
+    let partner = +req.query.partner
+    const userId = +req.params.userId;
+    const rooms = await User.getRooms(userId, partner);
+    return res.json({ rooms });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;

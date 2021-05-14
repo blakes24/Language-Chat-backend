@@ -17,13 +17,13 @@ afterAll(endTransaction);
 
 describe("create", function () {
   test("works", async function () {
-    let newRoom = await Room.create(1, 2);
+    let newRoom = await Room.create(4, 2);
     expect(newRoom).toEqual({
       id: expect.any(Number),
-      user1: 1,
+      user1: 4,
       user2: 2,
     });
-    const found = await db.query("SELECT * FROM rooms WHERE user_one = 1");
+    const found = await db.query("SELECT * FROM rooms WHERE user_one = 4");
     expect(found.rows.length).toEqual(1);
   });
 });
