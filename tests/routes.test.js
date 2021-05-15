@@ -194,3 +194,32 @@ describe("POST rooms", function () {
     expect(resp.status).toEqual(201);
   });
 });
+
+/************************************** GET /messages */
+
+describe("GET /messages", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .get("/messages")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual(
+      expect.objectContaining({ messages: expect.any(Array) })
+    );
+    expect(resp.status).toEqual(200);
+  });
+
+  test("works with room filter", async function () {
+    const resp = await request(app)
+      .get("/messages?room=1")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual(
+      expect.objectContaining({ messages: expect.any(Array) })
+    );
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if missing token", async function () {
+    const resp = await request(app).get("/messages");
+    expect(resp.statusCode).toEqual(401);
+  });
+});
