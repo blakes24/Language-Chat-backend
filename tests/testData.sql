@@ -24,14 +24,6 @@ CREATE TABLE users (
     social_id text
 );
 
-CREATE TABLE messages (
-    id serial PRIMARY KEY,
-    sent_from integer REFERENCES users ON DELETE CASCADE,
-    sent_to integer REFERENCES users ON DELETE CASCADE,
-    body text,
-    sent_at timestamp DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE partners (
     id serial PRIMARY KEY,
     user_id integer REFERENCES users ON DELETE CASCADE,
@@ -60,6 +52,15 @@ CREATE TABLE rooms (
     id serial PRIMARY KEY,
     user_one integer REFERENCES users ON DELETE CASCADE,
     user_two integer REFERENCES users ON DELETE CASCADE
+);
+
+CREATE TABLE messages (
+    id serial PRIMARY KEY,
+    sent_from integer REFERENCES users ON DELETE CASCADE,
+    sent_to integer REFERENCES users ON DELETE CASCADE,
+    body text NOT NULL,
+    room_id integer REFERENCES rooms ON DELETE CASCADE,
+    sent_at timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO users (name, email, PASSWORD, bio, image_url)

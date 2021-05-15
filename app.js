@@ -9,6 +9,7 @@ const ExpressError = require("./helpers/ExpressError");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/", function (req, res, next) {
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/rooms", roomRoutes);
+app.use("/messages", messageRoutes);
 
 /** Handle 404 errors */
 app.use(function (req, res, next) {
