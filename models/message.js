@@ -38,6 +38,19 @@ class Message {
 
     return messages;
   }
+
+  static async add({ from, to, body, roomId }) {
+    const result = await db.query(
+      `INSERT INTO messages (sent_from, sent_to, body, room_id)
+        VALUES ($1, $2, $3, $4)
+      RETURNING
+        id, sent_from AS "from", sent_to AS "to", room_id AS "roomId", body, sent_at AS "sentAt"`,
+      [from, to, body, roomId]
+    );
+    const message = result.rows[0];
+
+    return message;
+  }
 }
 
 module.exports = Message;
