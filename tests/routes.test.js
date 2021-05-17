@@ -186,10 +186,10 @@ describe("POST rooms", function () {
   test("works", async function () {
     const resp = await request(app)
       .post("/rooms")
-      .send({ user1: 1, user2: 2 })
+      .send({ user1: 4, user2: 2 })
       .set("authorization", `Bearer ${testJwt}`);;
     expect(resp.body).toEqual({
-      room: { id: expect.any(Number), user1: 1, user2: 2 },
+      room: { id: expect.any(String), user1: 4, user2: 2 },
     });
     expect(resp.status).toEqual(201);
   });
@@ -210,7 +210,7 @@ describe("GET /messages", function () {
 
   test("works with room filter", async function () {
     const resp = await request(app)
-      .get("/messages?room=1")
+      .get("/messages?room=1-2")
       .set("authorization", `Bearer ${testJwt}`);
     expect(resp.body).toEqual(
       expect.objectContaining({ messages: expect.any(Array) })

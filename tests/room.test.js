@@ -19,7 +19,7 @@ describe("create", function () {
   test("works", async function () {
     let newRoom = await Room.create(4, 2);
     expect(newRoom).toEqual({
-      id: expect.any(Number),
+      id: expect.any(String),
       user1: 4,
       user2: 2,
     });

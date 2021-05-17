@@ -49,7 +49,7 @@ CREATE TABLE learning_languages (
 );
 
 CREATE TABLE rooms (
-    id serial PRIMARY KEY,
+    id text PRIMARY KEY,
     user_one integer REFERENCES users ON DELETE CASCADE,
     user_two integer REFERENCES users ON DELETE CASCADE
 );
@@ -59,7 +59,7 @@ CREATE TABLE messages (
     sent_from integer REFERENCES users ON DELETE CASCADE,
     sent_to integer REFERENCES users ON DELETE CASCADE,
     body text NOT NULL,
-    room_id integer REFERENCES rooms ON DELETE CASCADE,
+    room_id text REFERENCES rooms ON DELETE CASCADE,
     sent_at timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
