@@ -18,7 +18,7 @@ const router = new express.Router();
 
 router.get("/", authenticateUser, async function (req, res, next) {
   try {
-    const room = +req.query.room;
+    const room = req.query.room;
     const messages = await Message.get(room);
     return res.json({ messages });
   } catch (err) {
