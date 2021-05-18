@@ -13,12 +13,16 @@ module.exports = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("connected to socket sever");
-    socket.emit("your id", socket.id);
+    console.log(`${socket.id} connected to socket sever`);
+
+    socket.on("join", (room) => {
+      socket.join(room);
+      console.log(`joined ${room}`);
+    });
 
     socket.on("send message", async (data) => {
       const message = await Message.add(data);
-      io.emit("message", message);
+      io.to(message.roomId).emit("message", message);
     });
   });
 };
