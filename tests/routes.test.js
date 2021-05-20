@@ -9,7 +9,6 @@ const {
   endTransaction,
   testJwt,
 } = require("./testSetup");
-const { validateFacebook, validateGoogle } = require("../helpers/social");
 const User = require("../models/user");
 const Room = require("../models/room");
 
@@ -177,6 +176,27 @@ describe("GET /users/:userId/rooms", function () {
   test("unauth if missing token", async function () {
     const resp = await request(app).get("/users");
     expect(resp.statusCode).toEqual(401);
+  });
+});
+
+/************************************** PATCH /users/:id */
+
+describe("PATCH /users/:id", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .patch("/users/1")
+      .send({ name: "Alex"})
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body.user.name).toEqual("Alex");
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if wrong user", async function () {
+    const resp = await request(app)
+      .patch("/users/99")
+      .send({ name: "Alex" })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.statusCode).toEqual(403);
   });
 });
 

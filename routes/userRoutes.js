@@ -67,4 +67,21 @@ router.get("/:userId/rooms", authenticateUser, async function (req, res, next) {
   }
 });
 
+/** PATCH /:userId => {user}
+ *
+ * updates user data
+ *
+ * Authorization required: valid token that matches user to update
+ **/
+
+router.patch("/:userId", authenticateUser, ensureCorrectUser, async function (req, res, next) {
+  try {
+    const userId = +req.params.userId;
+    const user = await User.update(req.body, userId);
+    return res.json({ user });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;

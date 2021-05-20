@@ -3,7 +3,7 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const ExpressError = require("../helpers/ExpressError");
-const { sqlForLangFilter } = require("../helpers/sql");
+const { sqlForLangFilter, sqlForUpdate } = require("../helpers/sql");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -193,6 +193,34 @@ class User {
     if (!rooms.length) throw new ExpressError("No rooms found", 404);
 
     return rooms;
+  }
+
+  /** Updates a user:
+   * returns { id, name, email, bio, imageUrl, active, socialProvider }
+   **/
+
+  static async update(data, userId) {
+    const { setCols, values } = sqlForUpdate(data, { imageUrl: "image_url" });
+    const userIdx = "$" + (values.length + 1);
+    const result = await db.query(
+      `UPDATE users
+      SET ${setCols}
+      WHERE id = ${userIdx}
+      RETURNING id,
+      name,
+      email,
+      bio,
+      image_url AS "imageUrl",
+      active,
+      social_provider AS "socialProvider"`,
+      [...values, userId]
+    );
+
+    const user = result.rows[0];
+
+    if (!user) throw new ExpressError(`No user: ${userId}`, 404);
+
+    return user;
   }
 }
 
