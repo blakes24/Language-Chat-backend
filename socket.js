@@ -24,5 +24,10 @@ module.exports = (server) => {
       const message = await Message.add(data);
       io.to(message.roomId).emit("message", message);
     });
+
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
   });
 };
