@@ -23,7 +23,7 @@ describe("addSpeaks", function () {
     let newLanguage = await Language.addSpeaks(userId, language);
     expect(newLanguage).toEqual({
       id: expect.any(Number),
-      languageCode: "id",
+      code: "id",
       userId: 1,
     });
     const found = await db.query(
@@ -35,20 +35,48 @@ describe("addSpeaks", function () {
 
 describe("addLearning", function () {
   const language = "id";
-  const level = "beginner";
+  const level = 1;
   const userId = 1;
 
   test("works", async function () {
     let newLanguage = await Language.addLearning(userId, language, level);
     expect(newLanguage).toEqual({
       id: expect.any(Number),
-      languageCode: "id",
-      level: "beginner",
+      code: "id",
+      level: 1,
       userId: 1,
     });
     const found = await db.query(
       "SELECT * FROM learning_languages WHERE language_code = 'id'"
     );
     expect(found.rows.length).toEqual(1);
+  });
+});
+
+describe("editLearning", function () {
+  const code = "es";
+  const level = 2;
+  const id = 1;
+
+  test("works", async function () {
+    let updatedLanguage = await Language.editLearning({ id, code, level });
+    expect(updatedLanguage).toEqual({
+      id: 1,
+      code: "es",
+      level: 2,
+    });
+  });
+});
+
+describe("editSpeaks", function () {
+  const code = "zh";
+  const id = 1;
+
+  test("works", async function () {
+    let updatedLanguage = await Language.editSpeaks({ id, code });
+    expect(updatedLanguage).toEqual({
+      id: 1,
+      code: "zh",
+    });
   });
 });

@@ -45,7 +45,7 @@ CREATE TABLE learning_languages (
     id serial PRIMARY KEY,
     user_id integer REFERENCES users ON DELETE CASCADE,
     language_code text REFERENCES languages ON DELETE CASCADE,
-    level TEXT
+    level integer NOT NULL
 );
 
 CREATE TABLE rooms (
@@ -73,7 +73,7 @@ INSERT INTO speaks_languages (user_id, language_code)
     VALUES (1, 'ru'), (2, 'en'), (3, 'zh'), (4, 'es');
 
 INSERT INTO learning_languages (user_id, language_code, level)
-    VALUES (4, 'en', 'beginner'), (3, 'es', 'advanced'), (2, 'zh', 'beginner'), (1, 'en', 'intermediate');
+    VALUES (4, 'en', 1), (3, 'es', 3), (2, 'zh', 1), (1, 'en', 2);
 
 INSERT INTO rooms (id, user_one, user_two)
     VALUES ('1-2', 1, 2), ('2-3', 2, 3), ('1-3', 1, 3);

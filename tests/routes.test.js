@@ -27,7 +27,7 @@ const userData = {
   socialId: "abc123ume",
   speaksLang: "en",
   learnsLang: "es",
-  learnsLevel: "beginner",
+  learnsLevel: 1,
 };
 
 jest.mock("../helpers/social", () => ({
@@ -241,5 +241,47 @@ describe("GET /messages", function () {
   test("unauth if missing token", async function () {
     const resp = await request(app).get("/messages");
     expect(resp.statusCode).toEqual(401);
+  });
+});
+
+/************************************** PATCH /languages/speaks/:id */
+
+describe("PATCH /languages/speaks/:id", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .patch("/languages/speaks/1")
+      .send({ code: "es" })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body.language.code).toEqual("es");
+    expect(resp.status).toEqual(200);
+  });
+
+  test("404 if invalid id", async function () {
+    const resp = await request(app)
+      .patch("/languages/speaks/999")
+      .send({ code: "es" })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+});
+
+/************************************** PATCH /languages/learning/:id */
+
+describe("PATCH /languages/learning/:id", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .patch("/languages/learning/1")
+      .send({ code: "de", level: 3 })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body.language).toEqual({id: 1, code: "de", level: 3});
+    expect(resp.status).toEqual(200);
+  });
+
+  test("404 if invalid id", async function () {
+    const resp = await request(app)
+      .patch("/languages/learning/999")
+      .send({ code: "de", level: 3 })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.statusCode).toEqual(404);
   });
 });

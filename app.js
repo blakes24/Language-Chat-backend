@@ -10,6 +10,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const languageRoutes = require("./routes/languageRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/messages", messageRoutes);
+app.use("/languages", languageRoutes);
 
 /** Handle 404 errors */
 app.use(function (req, res, next) {
