@@ -101,8 +101,8 @@ class User {
         u.image_url AS "imageUrl",
         active,
         social_provider AS "socialProvider",
-        COALESCE(json_agg(json_build_object('code', l1.code, 'language', l1.name))) AS speaks,
-        COALESCE(json_agg(json_build_object('code', l2.code, 'language', l2.name, 'level', ll.level))) AS learning
+        COALESCE(json_agg(json_build_object('id', sl.id, 'code', l1.code, 'language', l1.name))) AS speaks,
+        COALESCE(json_agg(json_build_object('id', ll.id, 'code', l2.code, 'language', l2.name, 'level', ll.level))) AS learning
       FROM
         users AS u
         JOIN speaks_languages AS sl ON u.id = sl.user_id
