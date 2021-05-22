@@ -84,4 +84,22 @@ router.patch("/:userId", authenticateUser, ensureCorrectUser, async function (re
   }
 });
 
+/** POST /:userId/partners => {user}
+ *
+ * adds a partner
+ *
+ * Authorization required: valid token
+ **/
+
+router.post("/:userId/partners", authenticateUser, async function (req, res, next) {
+  try {
+    const userId = +req.params.userId;
+    const partnerId = +req.body.partnerId;
+    const partner = await User.addPartner({userId, partnerId});
+    return res.status(201).json({ partner });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;
