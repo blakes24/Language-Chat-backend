@@ -222,6 +222,33 @@ class User {
 
     return user;
   }
+
+  /** Add partner: returns { id, userId, partnerId } **/
+
+  static async addPartner({ userId, partnerId }) {
+    const duplicateCheck = await db.query(
+      `SELECT *
+           FROM partners
+           WHERE user_id=$1 AND partner_id=$2`,
+      [userId, partnerId]
+    );
+
+    if (duplicateCheck.rows[0]) {
+      throw new ExpressError(`Partner already exists`, 400);
+    }
+
+    const result = await db.query(
+      `INSERT INTO partners
+           (user_id, partner_id)
+           VALUES ($1, $2)
+           RETURNING id, user_id AS "userId", partner_id AS "partnerId"`,
+      [userId, partnerId]
+    );
+
+    const partner = result.rows[0];
+
+    return partner;
+  }
 }
 
 module.exports = User;

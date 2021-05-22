@@ -290,3 +290,28 @@ describe("PATCH /languages/learning/:id", function () {
     expect(resp.statusCode).toEqual(404);
   });
 });
+
+/************************************** POST /users/:id/partners */
+
+describe("POST /users/:id/partners", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .post("/users/1/partners")
+      .send({ partnerId: 3 })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body.partner.partnerId).toEqual(3);
+    expect(resp.status).toEqual(201);
+  });
+
+  test("400 if duplicate", async function () {
+    await request(app)
+      .post("/users/1/partners")
+      .send({ partnerId: 3 })
+      .set("authorization", `Bearer ${testJwt}`);
+    const resp = await request(app)
+      .post("/users/1/partners")
+      .send({ partnerId: 3 })
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+});
