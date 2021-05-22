@@ -315,3 +315,20 @@ describe("POST /users/:id/partners", function () {
     expect(resp.statusCode).toEqual(400);
   });
 });
+
+/************************************** GET /users/:id/partners */
+
+describe("GET /users/:id/partners", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .get("/users/1/partners")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body.partners).toEqual(expect.any(Array));
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if missing token", async function () {
+    const resp = await request(app).get("/users/1/partners")
+    expect(resp.statusCode).toEqual(401);
+  })
+});
