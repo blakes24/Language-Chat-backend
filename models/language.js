@@ -44,10 +44,14 @@ class Language {
 
   static async editLearning({ code, level, id }) {
     const result = await db.query(
-      `UPDATE learning_languages
+      `WITH update AS (UPDATE learning_languages
       SET language_code=$1, level=$2
       WHERE id = $3
-      RETURNING id, language_code AS "code", level`,
+      RETURNING *)
+      SELECT update.id, update.language_code AS "code", update.level, lang.name AS "language"
+      FROM update
+      JOIN languages as lang ON update.language_code = lang.code
+       `,
       [code, level, id]
     );
     const language = result.rows[0];
@@ -61,10 +65,13 @@ class Language {
 
   static async editSpeaks({ code, id }) {
     const result = await db.query(
-      `UPDATE speaks_languages
+      `WITH update AS (UPDATE speaks_languages
       SET language_code=$1
       WHERE id = $2
-      RETURNING id, language_code AS "code"`,
+      RETURNING *)
+      SELECT update.id, update.language_code AS "code", lang.name AS "language"
+      FROM update
+      JOIN languages as lang ON update.language_code = lang.code`,
       [code, id]
     );
     const language = result.rows[0];

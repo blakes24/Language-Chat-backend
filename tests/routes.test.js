@@ -273,7 +273,12 @@ describe("PATCH /languages/learning/:id", function () {
       .patch("/languages/learning/1")
       .send({ code: "de", level: 3 })
       .set("authorization", `Bearer ${testJwt}`);
-    expect(resp.body.language).toEqual({id: 1, code: "de", level: 3});
+    expect(resp.body.language).toEqual({
+      id: 1,
+      code: "de",
+      level: 3,
+      language: "German",
+    });
     expect(resp.status).toEqual(200);
   });
 
