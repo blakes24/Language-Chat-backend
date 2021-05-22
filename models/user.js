@@ -249,6 +249,38 @@ class User {
 
     return partner;
   }
+
+  /** Get a users partners:
+   * returns [{ partner }, ...]
+   **/
+
+  static async getPartners(userId) {
+    const result = await db.query(
+      `SELECT
+        u.id,
+        u.name,
+        u.bio,
+        u.image_url AS "imageUrl",
+        active,
+        COALESCE(json_agg(json_build_object('code', l1.code, 'language', l1.name))) AS speaks,
+        COALESCE(json_agg(json_build_object('code', l2.code, 'language', l2.name, 'level', ll.level))) AS learning
+      FROM
+        partners AS p
+        JOIN users AS u ON p.partner_id = u.id
+        JOIN speaks_languages AS sl ON u.id = sl.user_id
+        JOIN languages AS l1 ON l1.code = sl.language_code
+        JOIN learning_languages AS ll ON u.id = ll.user_id
+        JOIN languages AS l2 ON l2.code = ll.language_code
+      WHERE p.user_id=$1
+      GROUP BY
+        u.id`,
+      [userId]
+    );
+
+    const partners = result.rows;
+
+    return partners;
+  }
 }
 
 module.exports = User;

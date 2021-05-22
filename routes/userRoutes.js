@@ -102,4 +102,21 @@ router.post("/:userId/partners", authenticateUser, async function (req, res, nex
   }
 });
 
+/** GET /:userId/partners => [{partner}, ...]
+ *
+ * adds a partner
+ *
+ * Authorization required: valid token
+ **/
+
+router.get("/:userId/partners", authenticateUser, async function (req, res, next) {
+  try {
+    const userId = +req.params.userId;
+    const partners = await User.getPartners(userId);
+    return res.json({ partners });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 module.exports = router;
