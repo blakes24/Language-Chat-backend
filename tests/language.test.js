@@ -64,6 +64,7 @@ describe("editLearning", function () {
       id: 1,
       code: "es",
       level: 2,
+      language: "Spanish",
     });
   });
 });
@@ -77,6 +78,7 @@ describe("editSpeaks", function () {
     expect(updatedLanguage).toEqual({
       id: 1,
       code: "zh",
+      language: "Chinese",
     });
   });
 });
