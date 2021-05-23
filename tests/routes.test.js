@@ -332,3 +332,22 @@ describe("GET /users/:id/partners", function () {
     expect(resp.statusCode).toEqual(401);
   })
 });
+
+/************************************** DELETE /users/:id */
+
+describe("DELETE /users/:id", function () {
+  test("works", async function () {
+    const resp = await request(app)
+      .delete("/users/1")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual({msg: "user deleted"});
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if wrong user", async function () {
+    const resp = await request(app)
+      .delete("/users/2")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.statusCode).toEqual(403);
+  })
+});

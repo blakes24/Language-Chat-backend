@@ -202,3 +202,22 @@ describe("gets user's chat rooms", function () {
   });
 });
 
+/************************************** delete a user */
+
+describe("delete user", function () {
+  test("works", async function () {
+    let res = await User.delete(1);
+    expect(res).toEqual("user deleted");
+    let check = await db.query(`SELECT * FROM users WHERE id=1`)
+    expect(check.rows.length).toEqual(0);
+  });
+
+  test("throws error user not found", async function () {
+    try {
+      await User.delete(99);
+    } catch (err) {
+      expect(err.status).toEqual(404);
+    }
+  });
+});
+

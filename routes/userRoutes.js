@@ -119,4 +119,26 @@ router.get("/:userId/partners", authenticateUser, async function (req, res, next
   }
 });
 
+/** DELETE /:userId
+ *
+ * removes a user's account
+ *
+ * Authorization required: valid token that matches user to delete
+ **/
+
+router.delete(
+  "/:userId",
+  authenticateUser,
+  ensureCorrectUser,
+  async function (req, res, next) {
+    try {
+      const userId = +req.params.userId;
+      const result = await User.delete(userId);
+      return res.json({ msg: result });
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
 module.exports = router;

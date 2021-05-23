@@ -281,6 +281,17 @@ class User {
 
     return partners;
   }
+
+  static async delete(id) {
+    const result = await db.query(
+      `DELETE FROM users WHERE id=$1 RETURNING id`,
+      [id]
+    );
+    const user = result.rows[0];
+    if (!user) throw new ExpressError("user not found", 404);
+
+    return "user deleted";
+  }
 }
 
 module.exports = User;
