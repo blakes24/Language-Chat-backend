@@ -250,6 +250,23 @@ class User {
     return partner;
   }
 
+  /** Delete partner: returns "Partner deleted" **/
+
+  static async deletePartner({ userId, partnerId }) {
+    const result = await db.query(
+      `DELETE FROM partners
+        WHERE user_id=$1 AND partner_id=$2
+        RETURNING id`,
+      [userId, partnerId]
+    );
+
+    const partner = result.rows[0];
+
+    if (!partner) throw new ExpressError("partner not found", 404);
+
+    return "Partner deleted";
+  }
+
   /** Get a users partners:
    * returns [{ partner }, ...]
    **/

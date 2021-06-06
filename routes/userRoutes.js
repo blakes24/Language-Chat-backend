@@ -119,6 +119,23 @@ router.get("/:userId/partners", authenticateUser, async function (req, res, next
   }
 });
 
+/** DELETE /:userId/partners/:partnerId => {user}
+ *
+ * deletes a partner
+ *
+ * Authorization required: valid token
+ **/
+
+router.delete("/:userId/partners/:partnerId", authenticateUser, async function (req, res, next) {
+  try {
+    const {userId, partnerId}= req.params;
+    const result = await User.deletePartner({userId, partnerId});
+    return res.status(200).json({ msg: result });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 /** DELETE /:userId
  *
  * removes a user's account
