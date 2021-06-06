@@ -333,6 +333,24 @@ describe("GET /users/:id/partners", function () {
   })
 });
 
+/************************************** DELETE /users/:id/partners/:partnerId */
+
+describe("DELETE /users/:id/partners/:partnerId", function () {
+  beforeEach(async () => await User.addPartner({userId:1, partnerId:2}));
+  test("works", async function () {
+    const resp = await request(app)
+      .delete("/users/1/partners/2")
+      .set("authorization", `Bearer ${testJwt}`);
+    expect(resp.body).toEqual({msg: "Partner deleted"});
+    expect(resp.status).toEqual(200);
+  });
+
+  test("unauth if missing token", async function () {
+    const resp = await request(app).delete("/users/1/partners/2")
+    expect(resp.statusCode).toEqual(401);
+  })
+});
+
 /************************************** DELETE /users/:id */
 
 describe("DELETE /users/:id", function () {
