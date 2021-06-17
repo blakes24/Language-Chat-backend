@@ -40,23 +40,25 @@ function sqlForLangFilter(filters) {
  * It takes an object of items to be updated and an object to convert any camelCase keys to the appropriate snake_case name for the column.
  *
  * Returns: {setCols, values}
- *  e.g. { setCols : "first_name=$1, age=$2", values: ["Aliya", 32] }
+ *  e.g. { setCols : "name=$1, age=$2", values: ["Aliya", 32] }
  *
  * */
 
 function sqlForUpdate(data, jsToSql) {
-	// checks for empty data object
-	const keys = Object.keys(data);
-	if (keys.length === 0) throw new ExpressError('No data');
+  // checks for empty data object
+  const keys = Object.keys(data);
+  if (keys.length === 0) throw new ExpressError("No data");
 
-	// {name: 'Aliya'} => ['first_name=$1']
-	const cols = keys.map((colName, idx) => `${jsToSql[colName] || colName}=$${idx + 1}`);
+  // {name: 'Aliya'} => ['name=$1']
+  const cols = keys.map(
+    (colName, idx) => `${jsToSql[colName] || colName}=$${idx + 1}`
+  );
 
-	// returns string of columns and an array of corresponding values
-	return {
-		setCols : cols.join(', '),
-		values  : Object.values(data)
-	};
+  // returns string of columns and an array of corresponding values
+  return {
+    setCols: cols.join(", "),
+    values: Object.values(data),
+  };
 }
 
 module.exports = { sqlForLangFilter, sqlForUpdate };

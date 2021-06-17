@@ -6,7 +6,7 @@ const express = require("express");
 const ExpressError = require("../helpers/ExpressError");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
-const { createToken } = require("../helpers/jwt");
+const { createToken, verifyToken } = require("../helpers/jwt");
 const Language = require("../models/language");
 const { validateFacebook, validateGoogle } = require("../helpers/social");
 const { sendMail } = require("../helpers/mail");
@@ -105,6 +105,20 @@ router.post("/social-token", async function (req, res, next) {
         : await validateGoogle(token);
 
     const user = await User.socialAuth(account.userId);;
+    const chatToken = createToken(user);
+    return res.json({ token: chatToken });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** PATCH /verify-email {token} => {token} **/
+
+router.patch("/verify-email", async function (req, res, next) {
+  try {
+    const { token } = req.body;
+    const { userId } = verifyToken(token)
+    const user = await User.update({verified: true}, userId);
     const chatToken = createToken(user);
     return res.json({ token: chatToken });
   } catch (err) {
