@@ -6,12 +6,12 @@ const ExpressError = require("./ExpressError");
 
 /** return JWT with userId. */
 
-function createToken(user) {
+function createToken(user, exp = "1d") {
   let payload = {
     userId: user.id,
   };
 
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: "1d" });
+  return jwt.sign(payload, SECRET_KEY, { expiresIn: exp });
 }
 
 /** return payload if token is verified. */

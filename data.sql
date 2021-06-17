@@ -21,7 +21,8 @@ CREATE TABLE users (
     image_url text,
     active boolean NOT NULL DEFAULT TRUE,
     social_provider text,
-    social_id text
+    social_id text,
+    verified boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE partners (
