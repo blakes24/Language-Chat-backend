@@ -41,6 +41,12 @@ jest.mock("../helpers/social", () => ({
   }),
 }));
 
+jest.mock("../helpers/mail", () => ({
+  sendMail: () => ({
+    msg: "sent",
+  }),
+}));
+
 /************************************** GET / */
 
 describe("GET /", function () {
@@ -59,8 +65,17 @@ describe("POST auth/register", function () {
     expect(resp.body).toEqual({ token: expect.any(String) });
     expect(resp.status).toEqual(201);
   });
-});
 
+  test("throws error for invalid data", async function () {
+    const resp = await request(app).post("/auth/register").send({
+      password: "tester1pw",
+      name: "tester1",
+      email: "bademail",
+      bio: "stuff about me",
+    });
+    expect(resp.status).toEqual(400);
+  });
+});
 /************************************** POST /auth/token */
 
 describe("POST auth/token", function () {

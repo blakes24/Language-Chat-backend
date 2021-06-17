@@ -9,6 +9,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/jwt");
 const Language = require("../models/language");
 const { validateFacebook, validateGoogle } = require("../helpers/social");
+const { sendMail } = require("../helpers/mail");
 
 const router = new express.Router();
 
@@ -50,7 +51,8 @@ router.post(
 
       await Language.addSpeaks(newUser.id, speaksLang);
       await Language.addLearning(newUser.id, learnsLang, learnsLevel);
-
+      await sendMail(newUser);
+      
       const token = createToken(newUser);
 
       return res.status(201).json({ token });
