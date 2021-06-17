@@ -36,12 +36,23 @@ class User {
       ? await bcrypt.hash(password, BCRYPT_WORK_FACTOR)
       : null;
 
+    const verified = socialId ? true : false;
+
     const result = await db.query(
       `INSERT INTO users
-           (password, name, email, bio, image_url, social_provider, social_id)
-           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           (password, name, email, bio, image_url, social_provider, social_id, verified)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
            RETURNING id, name, email, bio, image_url AS "imageUrl"`,
-      [hashedPassword, name, email, bio, imageUrl, socialProvider, socialId]
+      [
+        hashedPassword,
+        name,
+        email,
+        bio,
+        imageUrl,
+        socialProvider,
+        socialId,
+        verified,
+      ]
     );
 
     const user = result.rows[0];
@@ -88,7 +99,7 @@ class User {
   }
 
   /** Get user:
-   * returns { id, name, email, bio, imageUrl, active, socialProvider, languages }
+   * returns { id, name, email, bio, imageUrl, active, socialProvider, verified, languages }
    **/
 
   static async get(userId) {
@@ -101,6 +112,7 @@ class User {
         u.image_url AS "imageUrl",
         active,
         social_provider AS "socialProvider",
+        verified,
         COALESCE(json_agg(json_build_object('id', sl.id, 'code', l1.code, 'language', l1.name))) AS speaks,
         COALESCE(json_agg(json_build_object('id', ll.id, 'code', l2.code, 'language', l2.name, 'level', ll.level))) AS learning
       FROM
@@ -212,7 +224,8 @@ class User {
       bio,
       image_url AS "imageUrl",
       active,
-      social_provider AS "socialProvider"`,
+      social_provider AS "socialProvider",
+      verified`,
       [...values, userId]
     );
 

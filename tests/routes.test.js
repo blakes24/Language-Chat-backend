@@ -129,6 +129,26 @@ describe("POST auth/validate", function () {
   });
 });
 
+/************************************** POST /auth/verify-email*/
+
+describe("POST auth/verify-email", function () {
+  beforeEach(async () => await User.register(userData));
+  test("works", async function () {
+    const resp = await request(app)
+      .patch("/auth/verify-email")
+      .send({ token: testJwt });
+    expect(resp.body).toEqual({ token: expect.any(String) });
+    expect(resp.status).toEqual(200);
+  });
+
+  test("throws error for invalid token", async function () {
+    const resp = await request(app)
+      .patch("/auth/verify-email")
+      .send({ token: "badtoken" });
+    expect(resp.status).toEqual(401);
+  });
+});
+
 /************************************** GET /users/:id */
 
 describe("GET /users/:id", function () {
