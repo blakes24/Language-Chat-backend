@@ -4,12 +4,11 @@ const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const ExpressError = require("./ExpressError");
 
-/** return JWT with userId. */
+/** return JWT for auth token or email verification. */
 
-function createToken(user, exp = "1d") {
-  let payload = {
-    userId: user.id,
-  };
+function createToken(user, type = "auth", exp = "1d") {
+  const payload =
+    type === "email" ? { email: user.email } : { userId: user.id };
 
   return jwt.sign(payload, SECRET_KEY, { expiresIn: exp });
 }

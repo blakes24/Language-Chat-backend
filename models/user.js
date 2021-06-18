@@ -208,7 +208,7 @@ class User {
   }
 
   /** Updates a user:
-   * returns { id, name, email, bio, imageUrl, active, socialProvider }
+   * returns { id, name, email, bio, imageUrl, active, socialProvider, verified }
    **/
 
   static async update(data, userId) {
@@ -232,6 +232,33 @@ class User {
     const user = result.rows[0];
 
     if (!user) throw new ExpressError(`No user: ${userId}`, 404);
+
+    return user;
+  }
+
+  /** Verifies a user's account:
+   * returns { id, name, email, bio, imageUrl, active, socialProvider, verified }
+   **/
+
+  static async verifyEmail(email) {
+    const result = await db.query(
+      `UPDATE users
+      SET verified = true
+      WHERE email = $1
+      RETURNING id,
+      name,
+      email,
+      bio,
+      image_url AS "imageUrl",
+      active,
+      social_provider AS "socialProvider",
+      verified`,
+      [email]
+    );
+
+    const user = result.rows[0];
+
+    if (!user) throw new ExpressError(`No account found for ${email}`, 404);
 
     return user;
   }
