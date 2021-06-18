@@ -8,6 +8,7 @@ const {
   rollbackTransaction,
   endTransaction,
   testJwt,
+  emailToken,
 } = require("./testSetup");
 const User = require("../models/user");
 const Room = require("../models/room");
@@ -141,7 +142,14 @@ describe("POST auth/resend-verification", function () {
     expect(resp.status).toEqual(200);
   });
 
-  test("throws error for invalid user", async function () {
+  test("throws error for invalid userId", async function () {
+    const resp = await request(app)
+      .post("/auth/resend-verification")
+      .send({ userId: "str" });
+    expect(resp.status).toEqual(400);
+  });
+
+  test("throws error if user does not exist", async function () {
     const resp = await request(app)
       .post("/auth/resend-verification")
       .send({ userId: 999 });
@@ -156,7 +164,7 @@ describe("PATCH auth/verify-email", function () {
   test("works", async function () {
     const resp = await request(app)
       .patch("/auth/verify-email")
-      .send({ token: testJwt });
+      .send({ token: emailToken });
     expect(resp.body).toEqual({ token: expect.any(String) });
     expect(resp.status).toEqual(200);
   });

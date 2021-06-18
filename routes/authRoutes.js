@@ -118,24 +118,32 @@ router.post("/social-token", async function (req, res, next) {
 
 /** POST /resend-verification {userId} => {token} **/
 
-router.post("/resend-verification", async function (req, res, next) {
-  try {
-    const { userId } = req.body;
-    const user = await User.get(userId);;
-    await sendMail(user);
-    return res.json({ msg: "email sent" });
-  } catch (err) {
-    return next(err);
+router.post(
+  "/resend-verification",
+  body("userId").isInt(),
+  async function (req, res, next) {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        throw new ExpressError("Invalid userId", 400);
+      }
+      const { userId } = req.body;
+      const user = await User.get(userId);
+      await sendMail(user);
+      return res.json({ msg: "email sent" });
+    } catch (err) {
+      return next(err);
+    }
   }
-});
+);
 
 /** PATCH /verify-email {token} => {token} **/
 
 router.patch("/verify-email", async function (req, res, next) {
   try {
     const { token } = req.body;
-    const { userId } = verifyToken(token)
-    const user = await User.update({verified: true}, userId);
+    const { email } = verifyToken(token);
+    const user = await User.verifyEmail(email);
     const chatToken = createToken(user);
     return res.json({ token: chatToken });
   } catch (err) {

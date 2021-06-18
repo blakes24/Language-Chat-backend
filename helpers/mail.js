@@ -17,7 +17,7 @@ async function sendMail(user) {
     },
   });
 
-  let code = createToken(user, "1h");
+  let code = createToken(user, "email", "1h");
 
   let mailOptions = {
     from: process.env.MAIL_USERNAME,

@@ -7,6 +7,7 @@ const { SECRET_KEY } = require("../config");
 const jwt = require("jsonwebtoken");
 
 const testJwt = jwt.sign({ userId: 1 }, SECRET_KEY);
+const emailToken = jwt.sign({ email: "tester1@mail.com" }, SECRET_KEY);
 
 const testData = fs
   .readFileSync(path.resolve(__dirname, "./testData.sql"))
@@ -34,4 +35,5 @@ module.exports = {
   rollbackTransaction,
   endTransaction,
   testJwt,
+  emailToken,
 };
