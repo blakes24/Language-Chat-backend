@@ -35,6 +35,7 @@ router.post(
         bio,
         imageUrl,
         socialId,
+        socialProvider,
         speaksLang,
         learnsLang,
         learnsLevel,
@@ -47,11 +48,14 @@ router.post(
         bio,
         imageUrl,
         socialId,
+        socialProvider,
       });
 
       await Language.addSpeaks(newUser.id, speaksLang);
       await Language.addLearning(newUser.id, learnsLang, learnsLevel);
-      await sendMail(newUser);
+      if (!newUser.socialId) {
+        await sendMail(newUser);
+      }
       
       const token = createToken(newUser);
 
@@ -107,6 +111,19 @@ router.post("/social-token", async function (req, res, next) {
     const user = await User.socialAuth(account.userId);;
     const chatToken = createToken(user);
     return res.json({ token: chatToken });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** POST /resend-verification {userId} => {token} **/
+
+router.post("/resend-verification", async function (req, res, next) {
+  try {
+    const { userId } = req.body;
+    const user = await User.get(userId);;
+    await sendMail(user);
+    return res.json({ msg: "email sent" });
   } catch (err) {
     return next(err);
   }

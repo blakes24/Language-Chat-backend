@@ -129,9 +129,29 @@ describe("POST auth/validate", function () {
   });
 });
 
-/************************************** POST /auth/verify-email*/
+/************************************** POST /auth/resend-verification */
 
-describe("POST auth/verify-email", function () {
+describe("POST auth/resend-verification", function () {
+  beforeEach(async () => await User.register(userData));
+  test("works", async function () {
+    const resp = await request(app)
+      .post("/auth/resend-verification")
+      .send({ userId: 1 });
+    expect(resp.body).toEqual({ msg: "email sent" });
+    expect(resp.status).toEqual(200);
+  });
+
+  test("throws error for invalid user", async function () {
+    const resp = await request(app)
+      .post("/auth/resend-verification")
+      .send({ userId: 999 });
+    expect(resp.status).toEqual(404);
+  });
+});
+
+/************************************** PATCH /auth/verify-email*/
+
+describe("PATCH auth/verify-email", function () {
   beforeEach(async () => await User.register(userData));
   test("works", async function () {
     const resp = await request(app)
