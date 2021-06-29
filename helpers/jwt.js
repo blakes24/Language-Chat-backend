@@ -15,12 +15,16 @@ function createToken(user, type = "auth", exp = "1d") {
 
 /** return payload if token is verified. */
 
-function verifyToken(token) {
+function verifyToken(token, type = "auth") {
   try {
     const payload = jwt.verify(token, SECRET_KEY);
     return payload;
   } catch (err) {
-    throw new ExpressError("Invalid token", 401);
+    let msg =
+      type === "email"
+        ? "Verification link is expired or invalid."
+        : "Invalid token";
+    throw new ExpressError(msg, 401);
   }
 }
 
