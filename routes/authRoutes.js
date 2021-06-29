@@ -142,7 +142,7 @@ router.post(
 router.patch("/verify-email", async function (req, res, next) {
   try {
     const { token } = req.body;
-    const { email } = verifyToken(token);
+    const { email } = verifyToken(token, "email");
     const user = await User.verifyEmail(email);
     const chatToken = createToken(user);
     return res.json({ token: chatToken });
