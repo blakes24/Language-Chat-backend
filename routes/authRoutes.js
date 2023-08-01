@@ -53,10 +53,10 @@ router.post(
 
       await Language.addSpeaks(newUser.id, speaksLang);
       await Language.addLearning(newUser.id, learnsLang, learnsLevel);
-      if (!newUser.socialId) {
-        await sendMail(newUser);
-      }
-      
+      // if (!newUser.socialId) {
+      //   await sendMail(newUser);
+      // }
+
       const token = createToken(newUser);
 
       return res.status(201).json({ token });
